@@ -1,10 +1,8 @@
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,19 +16,19 @@ public class Contact {
 		this.number = number;
 	}
 
-	public static void LoadList(Path path) throws IOException {
+	public static void LoadList(Path path, List<String> stringList) throws IOException {
 		System.out.println("Name  |   Phone Number");
 		System.out.println("----------------------");
 
-		List<String> printList = Files.readAllLines(path);
-//		for(int i = 0; i < printList.size(); i += 2){
-//			System.out.println(printList.get(i) + " : " + printList.get(i+1));
+//		for(int i = 0; i < arrayList.size(); i++){
+//			System.out.printf("%s | %s", arrayList.get(i).name, arrayList.get(i).number);
+//
 //		}
-		Contact test = new Contact("Test", "5555555");
-		Contact[] contactListArray = {test};
-		for (Contact contact : contactListArray){
-			System.out.println(contact.name + " " + contact.number);
-		}
+		for(int i = 0; i < stringList.size(); i += 2){
+       System.out.println(stringList.get(i) + " : " + stringList.get(i+1));
+    }
+
+
 	}
 
 	public static void addContact(Path path) throws IOException {
@@ -38,14 +36,21 @@ public class Contact {
 
 		System.out.println("Enter contact name: ");
 		String contactName = input.getString();
+		System.out.println("Enter your contact's phone number");
+		String contactNumber = input.getString();
 
-		Contact test = new Contact("Test", "5555555");
-//		Contact[] contactList = {test};
 
-		List<String> contactList = Arrays.asList(test.name, test.number);
-		System.out.println("contactList = " + contactList);
-		System.out.println();
-		Files.write(path, contactList);
+		ArrayList<Contact> contactArr = new ArrayList<>();
+		contactArr.add(new Contact(contactName, contactNumber));
+		for(int i = 0; i < contactArr.size(); i++){
+			List<String> contactList = Arrays.asList(contactArr.get(i).name, contactArr.get(i).number);
+			System.out.println("contactList = " + contactList);
+			Files.write(path, contactList, StandardOpenOption.APPEND);
+		}
+		List<String> printList = Files.readAllLines(path);
+		LoadList(path, printList);
+
+
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -54,7 +59,7 @@ public class Contact {
 		Path dataDirectory = Paths.get(directory);
 		Path dataFile = Paths.get(directory, fileName);
 
-//		addContact(dataFile);
-		LoadList(dataFile);
+		addContact(dataFile);
+		System.out.println();
 	}
 }
