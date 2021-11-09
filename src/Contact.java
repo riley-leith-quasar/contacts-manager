@@ -23,8 +23,13 @@ public class Contact {
 		System.out.println("----------------------");
 
 		List<String> printList = Files.readAllLines(path);
-		for(int i = 0; i < printList.size(); i += 2){
-			System.out.println(printList.get(i) + " : " + printList.get(i+1));
+//		for(int i = 0; i < printList.size(); i += 2){
+//			System.out.println(printList.get(i) + " : " + printList.get(i+1));
+//		}
+		Contact test = new Contact("Test", "5555555");
+		Contact[] contactListArray = {test};
+		for (Contact contact : contactListArray){
+			System.out.println(contact.name + " " + contact.number);
 		}
 	}
 
@@ -35,6 +40,7 @@ public class Contact {
 		String contactName = input.getString();
 
 		Contact test = new Contact("Test", "5555555");
+//		Contact[] contactList = {test};
 
 		List<String> contactList = Arrays.asList(test.name, test.number);
 		System.out.println("contactList = " + contactList);
@@ -48,7 +54,7 @@ public class Contact {
 		Path dataDirectory = Paths.get(directory);
 		Path dataFile = Paths.get(directory, fileName);
 
-		addContact(dataFile);
+//		addContact(dataFile);
 		LoadList(dataFile);
 	}
 }
