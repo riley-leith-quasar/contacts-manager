@@ -53,13 +53,33 @@ public class Contact {
 
 	}
 
+	public static void searchContact(Path path, Input input) throws IOException {
+		System.out.println("Enter contact name: ");
+		String userSearch = input.getString();
+		List<String> printList = Files.readAllLines(path);
+		System.out.println("printList.size() = " + printList.size());
+		for(int i = 0; i < printList.size(); i += 2){
+			System.out.println("i = " + i);
+			if(userSearch.equalsIgnoreCase(printList.get(i))) {
+				System.out.println(printList.get(i) + " : " + printList.get(i + 1));
+
+			} else {
+				System.out.printf("Contact %s not found%n", userSearch);
+				searchContact(path, input);
+			}
+		}
+
+
+	}
 	public static void main(String[] args) throws IOException {
+		Input input = new Input();
 		String directory = "./src/data";
 		String fileName = "contacts.txt";
 		Path dataDirectory = Paths.get(directory);
 		Path dataFile = Paths.get(directory, fileName);
 
-		addContact(dataFile);
+//		addContact(dataFile);
 		System.out.println();
+		searchContact(dataFile, input);
 	}
 }
