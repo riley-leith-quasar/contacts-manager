@@ -27,27 +27,23 @@ public class Contact {
 
 		return contactArr;
 
-//		for (Contact contact : contactArr){
-//			System.out.printf("%s | %s%n", contact.name, contact.number);
-//		}
 	}
 
-	public static void LoadList(Path path, List<String> stringList) throws IOException {
+	public static void LoadList(List<String> stringList) {
+		System.out.println();
 		System.out.println("Name  |   Phone Number");
 		System.out.println("----------------------");
 
-//		for(int i = 0; i < arrayList.size(); i++){
-//			System.out.printf("%s | %s", arrayList.get(i).name, arrayList.get(i).number);
-//
-//		}
 		for(int i = 0; i < stringList.size(); i += 2){
-       System.out.println(stringList.get(i) + " : " + stringList.get(i+1));
+       System.out.println(stringList.get(i) + " | " + stringList.get(i+1));
     	}
+		System.out.println();
 	}
 
 	public static void addContact(Path path) throws IOException {
 		Input input = new Input();
 
+		System.out.println("--- Add a Contact ---");
 		System.out.println("Enter contact name: ");
 		String contactName = input.getString();
 		System.out.println("Enter your contact's phone number");
@@ -62,15 +58,14 @@ public class Contact {
 			Files.write(path, contactList, StandardOpenOption.APPEND);
 		}
 		List<String> printList = Files.readAllLines(path);
-		LoadList(path, printList);
-
-
+		LoadList(printList);
 	}
 
 	public static void searchContact(Path path, Input input) throws IOException {
 		ArrayList<Contact> contactArr = createContactsArray(path);
 		System.out.println("Enter contact name: ");
 		String userSearch = input.getString();
+
 		boolean found = false;
 
 		for (Contact contact : contactArr) {
@@ -81,7 +76,7 @@ public class Contact {
 			}
 		}
 		if (!found){
-			System.out.printf("Contact %s not found%n", userSearch);
+			System.out.printf("%nContact %s not found%n", userSearch);
 			searchContact(path, input);
 		}
 	}
@@ -101,18 +96,38 @@ public class Contact {
 			newList.add(contact.number);
 		}
 		Files.write(path, newList);
+		runContactManager();
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void runContactManager() throws IOException {
+
 		Input input = new Input();
 		String directory = "./src/data";
 		String fileName = "contacts.txt";
-		Path dataDirectory = Paths.get(directory);
 		Path dataFile = Paths.get(directory, fileName);
 
-		addContact(dataFile);
-		System.out.println();
-		searchContact(dataFile, input);
-		deleteContact(dataFile, input);
+		boolean confirmation = true;
+
+		do {
+			List<String> printList = Files.readAllLines(dataFile);
+			LoadList(printList);
+			System.out.printf("1. View contacts.\n2. Add a new contact.\n3. Search a contact by name.\n4. Delete an existing contact.\n5. Exit.\nEnter an option (1, 2, 3, 4 or 5):%n");
+			String userSelection = input.getString();
+			System.out.println("userSelection = " + userSelection);
+
+			switch (userSelection) {
+				case "1" -> runContactManager();
+				case "2" -> addContact(dataFile);
+				case "3" -> searchContact(dataFile, input);
+				case "4" -> deleteContact(dataFile, input);
+				case "5" -> confirmation = false;
+				default -> runContactManager();
+			}
+		} while (confirmation);
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		runContactManager();
 	}
 }
